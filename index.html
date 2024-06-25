@@ -87,6 +87,19 @@
     <script>
         let lifters = [];
 
+        // Load lifters from localStorage
+        function loadLifters() {
+            const storedLifters = localStorage.getItem('lifters');
+            if (storedLifters) {
+                lifters = JSON.parse(storedLifters);
+            }
+        }
+
+        // Save lifters to localStorage
+        function saveLifters() {
+            localStorage.setItem('lifters', JSON.stringify(lifters));
+        }
+
         function updateLeaderboard() {
             const categories = ['bench', 'deadlift', 'squat'];
             categories.forEach(category => {
@@ -108,11 +121,24 @@
             const deadlift = Number(document.getElementById('deadlift').value);
             const squat = Number(document.getElementById('squat').value);
 
-            lifters.push({ name, bench, deadlift, squat });
+            // Check if lifter already exists
+            const existingLifterIndex = lifters.findIndex(lifter => lifter.name.toLowerCase() === name.toLowerCase());
+
+            if (existingLifterIndex !== -1) {
+                // Update existing lifter
+                lifters[existingLifterIndex] = { name, bench, deadlift, squat };
+            } else {
+                // Add new lifter
+                lifters.push({ name, bench, deadlift, squat });
+            }
+
+            saveLifters();
             updateLeaderboard();
             this.reset();
         });
 
+        // Initial load
+        loadLifters();
         updateLeaderboard();
     </script>
 </body>
