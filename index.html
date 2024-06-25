@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifting Competition Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .leaderboard {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .lift-category {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            width: 300px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lifting Competition Leaderboard</h1>
+    <div class="leaderboard">
+        <div class="lift-category">
+            <h2>Bench Press</h2>
+            <ul id="benchLeaderboard"></ul>
+        </div>
+        <div class="lift-category">
+            <h2>Deadlift</h2>
+            <ul id="deadliftLeaderboard"></ul>
+        </div>
+        <div class="lift-category">
+            <h2>Squat</h2>
+            <ul id="squatLeaderboard"></ul>
+        </div>
+    </div>
+    <form id="entryForm">
+        <input type="text" id="name" placeholder="Enter name" required>
+        <input type="number" id="bench" placeholder="Bench Press (kg)" required>
+        <input type="number" id="deadlift" placeholder="Deadlift (kg)" required>
+        <input type="number" id="squat" placeholder="Squat (kg)" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        let lifters = [];
+
+        function updateLeaderboard() {
+            const categories = ['bench', 'deadlift', 'squat'];
+            categories.forEach(category => {
+                const leaderboard = document.getElementById(`${category}Leaderboard`);
+                leaderboard.innerHTML = '';
+                lifters.sort((a, b) => b[category] - a[category]);
+                lifters.slice(0, 5).forEach(lifter => {
+                    const li = document.createElement('li');
+                    li.textContent = `${lifter.name}: ${lifter[category]} kg`;
+                    leaderboard.appendChild(li);
+                });
+            });
+        }
+
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const bench = Number(document.getElementById('bench').value);
+            const deadlift = Number(document.getElementById('deadlift').value);
+            const squat = Number(document.getElementById('squat').value);
+
+            lifters.push({ name, bench, deadlift, squat });
+            updateLeaderboard();
+            this.reset();
+        });
+
+        updateLeaderboard();
+    </script>
+</body>
+</html>
